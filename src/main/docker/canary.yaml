@@ -1,0 +1,28 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: abacate-canary
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: abacate 
+        tier: backend
+        track: canary
+    spec:
+      containers:
+      - name: abacate
+        image: haha:v2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            httpHeaders:
+            - name: X-Custom-Header
+              value: Awesome
+          initialDelaySeconds: 3
+          periodSeconds: 3
